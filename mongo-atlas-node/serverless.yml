@@ -1,0 +1,14 @@
+service: mongo-atlas-node
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-west-2
+  environment:
+    MONGODB_URI: ${env:MONGODB_ATLAS_URI}
+
+functions:
+  user:
+    handler: index.handler
+    url: true

@@ -1,0 +1,28 @@
+
+
+service: mongo-atlas-golang
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: us-west-2
+  environment:
+    MONGODB_URI: ${env:MONGODB_ATLAS_URI}
+
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
+
+functions:
+  user:
+    handler: bin/user
+    url: true
+    timeout: 6
+    memorySize: 1024
+  users:
+    handler: bin/users
+    url: true
+    timeout: 6
+    memorySize: 1024
