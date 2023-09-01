@@ -3,6 +3,7 @@
 
 # golang output binary directory
 bin
+tmp
 
 # golang vendor (dependencies) directory
 vendor

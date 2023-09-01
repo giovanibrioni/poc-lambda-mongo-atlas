@@ -1,0 +1,22 @@
+## GET Health
+GET http://localhost:8080/health
+
+### GET Request
+GET http://localhost:3000/ping
+
+### POST User
+POST http://localhost:3000/v1/user
+Content-Type: application/json
+
+{
+	"email": "user@example.com.br",
+	"first": "User",
+	"last": "Last",
+	"status": "active",
+    "age": 43
+}
+
+
+### GET UserByID
+GET http://localhost:3000/v1/user/64f21d3205dff81116bb15c9
+

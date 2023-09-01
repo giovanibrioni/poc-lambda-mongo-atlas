@@ -4,11 +4,12 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
-  region: us-west-2
   environment:
-    MONGODB_URI: ${env:MONGODB_ATLAS_URI}
+    MONGODB_URI: ${env:MONGODB_URI}
 
 functions:
   user:
-    handler: index.handler
+    handler: ./src/index.handler
     url: true
+plugins:
+  - serverless-offline

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: user-registry-go
+  name: user-registry-go
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-registry-go
+  template:
+    metadata:
+      labels:
+        app: user-registry-go
+    spec:
+      containers:
+      - image: giovanibrioni/user-registry-go:1.0.0-s-arm 
+        imagePullPolicy: Always
+        env:
+        - name: MONGODB_URI
+          value: ${env:MONGODB_URI}
+        name: user-registry-go 
+        ports:
+        - containerPort: 8080
