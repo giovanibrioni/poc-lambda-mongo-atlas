@@ -36,14 +36,13 @@ app.get('/v1/user/:id', async (req, res) => {
       return res.status(400).send({ message: 'Invalid ID' });
     }
 
-    const user = await client.db(dbName).collection(collectionName).findOne({ _id: new ObjectId(id) });
+    let user = await client.db(dbName).collection(collectionName).findOne({ _id: new ObjectId(id) });
 
     if (!user) {
       return res.status(404).send({ message: 'user not found' });
     }
 
-    user.id = user._id;
-    delete user._id;
+    user = changeId(user)
 
     return res.status(200).json({data: user});
     
@@ -59,16 +58,52 @@ app.post('/v1/user', async (req, res) => {
      if (error) {
        return res.status(400).json({ message: error.details[0].message });
      }
-    const user = new User(value);
+    let user = new User(value);
     
     const result = await client.db(dbName).collection(collectionName).insertOne(user);
     if (result.insertedId) {
-      user.id = result.insertedId;
-      delete user._id;
+      user = changeId(user)
       return res.status(201).json({data: user});
     }
     console.error(error);
     res.status(500).send('Internal server error');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+app.get('/v1/user', async (req, res) => {
+  try {
+    // Parse the query parameters for page and limit
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    // Calculate the offset and skip values
+    const offset = (page - 1) * limit;
+    const skip = offset;
+
+    // Find all users and apply pagination
+    const users = await client.db(dbName).collection(collectionName).find().skip(skip).limit(limit).toArray();
+
+    // Get the total number of users
+    const count = await client.db(dbName).collection(collectionName).countDocuments();
+
+    // Calculate the total number of pages
+    const pages = Math.ceil(count / limit);
+
+    users.forEach(user => {
+      user = changeId(user)
+    });
+
+    return res.status(200).json({
+      data: users,
+      page,
+      limit,
+      pages,
+      count,
+    });
+
   } catch (error) {
     console.error(error);
     return res.status(500).send('Internal server error');
@@ -93,4 +128,8 @@ app.get('/ping', async (req, res) => {
   return res.send( {message: 'pong'} );
   });
 
-
+const changeId = (user) => {
+  user.id = user._id;
+  delete user._id;
+  return user
+}

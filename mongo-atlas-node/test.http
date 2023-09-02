@@ -16,6 +16,8 @@ Content-Type: application/json
     "age": 43
 }
 
+### GET Users
+GET http://localhost:3000/v1/user?limit=10&page=1
 
 ### GET UserByID
 GET http://localhost:3000/v1/user/64f21d3205dff81116bb15c9
