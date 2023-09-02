@@ -55,9 +55,9 @@ func connectToDB(ctx context.Context) {
 	opts := options.Client()
 	secondary := readpref.Secondary()
 	opts.SetReadPreference(secondary)
-	opts.SetServerSelectionTimeout(5 * time.Second)
-	opts.SetConnectTimeout(2 * time.Second)
 	opts.ApplyURI(os.Getenv("MONGODB_URI"))
+	opts.SetMaxPoolSize(500)
+	opts.SetMaxConnIdleTime(5 * time.Minute)
 
 	client, connectionError = mongo.Connect(ctx, opts)
 	if connectionError != nil {
