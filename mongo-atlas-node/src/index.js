@@ -4,7 +4,7 @@ const serverless = require('serverless-http');
 const bodyParser = require('body-parser')
 
 
-const User = require('./user');
+const { User, userSchema } = require('./user');
 
 const dbName = "test"
 const collectionName = "users"
@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 const lambdaName = process.env.AWS_LAMBDA_FUNCTION_NAME
 if (!lambdaName) {
-  const port = process.env.PORT || 8080
+  const port = process.env.PORT || 3000
   app.listen(port, () => {
     console.log(`app is listening on port ${port}`)
   })
@@ -55,7 +55,11 @@ app.get('/v1/user/:id', async (req, res) => {
 
 app.post('/v1/user', async (req, res) => {
   try {
-    const user = new User(req.body);
+    const { error, value } = userSchema.validate(req.body);
+     if (error) {
+       return res.status(400).json({ message: error.details[0].message });
+     }
+    const user = new User(value);
     
     const result = await client.db(dbName).collection(collectionName).insertOne(user);
     if (result.insertedId) {

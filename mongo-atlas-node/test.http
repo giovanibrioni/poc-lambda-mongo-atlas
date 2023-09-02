@@ -1,5 +1,5 @@
 ## GET Health
-GET http://localhost:8080/health
+GET http://localhost:3000/health
 
 ### GET Request
 GET http://localhost:3000/ping
