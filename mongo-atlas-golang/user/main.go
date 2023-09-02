@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -111,11 +112,15 @@ func listUsers(ctx *gin.Context) {
 		return
 	}
 
+	// Calculate the total number of pages
+	pages := int(math.Ceil(float64(totalCount) / float64(limit)))
+
 	ctx.JSON(http.StatusOK, gin.H{
-		"data":       userList,
-		"page":       page,
-		"limit":      limit,
-		"totalCount": totalCount,
+		"data":  userList,
+		"page":  page,
+		"limit": limit,
+		"pages": pages,
+		"count": totalCount,
 	})
 }
 
