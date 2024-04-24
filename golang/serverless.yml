@@ -1,0 +1,22 @@
+
+
+service: user-service-mongo-golang
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: go1.x
+  environment:
+    MONGODB_URI: ${env:MONGODB_URI}
+
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
+
+functions:
+  user:
+    handler: bin/user
+    url: true
+    timeout: 10
+    memorySize: 1024

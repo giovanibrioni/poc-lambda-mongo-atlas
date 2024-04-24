@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+  user-api:
+    build:
+      dockerfile: dev.Dockerfile
+      context: .
+      target: dev
+    command: ["air", "-c", ".air.toml"]
+    depends_on:
+      - mongo
+    volumes:
+      - ./:/app
+    ports:
+    - 8080:8080
+    env_file:
+      - .env-example
+    environment:
+      GIN_MODE: debug
